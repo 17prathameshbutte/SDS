@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}CampusFix | Ticket Details{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="card shadow-sm border-0">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+          <h2 class="mb-0">{{ complaint['title'] }}</h2>
+          {% if complaint['status'] == 'Pending' %}
+            <span class="badge bg-warning text-dark">Pending</span>
+          {% elif complaint['status'] == 'In Progress' %}
+            <span class="badge bg-info text-dark">In Progress</span>
+          {% else %}
+            <span class="badge bg-success">Resolved</span>
+          {% endif %}
+        </div>
+
+        <div class="mb-3">
+          <strong>Ticket ID:</strong> {{ ticket_ref(complaint['id']) }}
+        </div>
+        <div class="mb-3">
+          <strong>Category:</strong> {{ complaint['category'] }}
+        </div>
+        <div class="mb-3">
+          <strong>Location:</strong> {{ complaint['location'] }}
+        </div>
+        <div class="mb-3">
+          <strong>Submitted:</strong> {{ complaint['created_at'] }}
+        </div>
+        <div class="mb-3">
+          <strong>Description:</strong>
+          <p class="mt-2 mb-0">{{ complaint['description'] }}</p>
+        </div>
+
+        {% if complaint['image_filename'] %}
+        <div class="mt-4">
+          <h5>Uploaded Image</h5>
+          <img src="{{ url_for('serve_uploaded_file', filename=complaint['image_filename']) }}" class="img-fluid rounded border" alt="Complaint image">
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-body">
+        <h5>AI Recommendation</h5>
+        <p><strong>Category:</strong> {{ complaint['ai_category'] or 'Not available' }}</p>
+        <p><strong>Priority:</strong> {{ complaint['ai_priority'] or 'Not available' }}</p>
+        <p class="mb-0"><strong>Explanation:</strong> {{ complaint['ai_explanation'] or 'No AI explanation recorded.' }}</p>
+      </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+      <div class="card-body">
+        <h5>Status History</h5>
+        {% if history %}
+          <ul class="list-group list-group-flush">
+            {% for row in history %}
+            <li class="list-group-item">
+              <strong>{{ row['new_status'] }}</strong><br>
+              <small>Changed: {{ row['changed_at'] }}</small><br>
+              <small>By: {{ row['changed_by_name'] or 'System' }}</small>
+            </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="mb-0 text-secondary">No history recorded.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

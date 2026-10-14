@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}CampusFix | Report Issue{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card shadow-sm border-0 mt-4">
+      <div class="card-body p-4">
+        <h2 class="mb-4">Report a Campus Issue</h2>
+        <form method="POST" enctype="multipart/form-data">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="title" class="form-label">Issue title</label>
+              <input type="text" class="form-control" id="title" name="title" required>
+            </div>
+            <div class="col-md-6">
+              <label for="category" class="form-label">Category</label>
+              <select class="form-select" id="category" name="category" required>
+                <option value="">Select a category</option>
+                {% for category in categories %}
+                  <option value="{{ category }}">{{ category }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-12">
+              <label for="location" class="form-label">Building and room</label>
+              <input type="text" class="form-control" id="location" name="location" placeholder="Example: Block A, Room 204" required>
+            </div>
+            <div class="col-12">
+              <label for="description" class="form-label">Detailed description</label>
+              <textarea class="form-control" id="description" name="description" rows="5" required></textarea>
+            </div>
+            <div class="col-12">
+              <label for="image" class="form-label">Upload image (JPG or PNG)</label>
+              <input type="file" class="form-control" id="image" name="image" accept=".jpg,.jpeg,.png" required>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary mt-4">Submit Complaint</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

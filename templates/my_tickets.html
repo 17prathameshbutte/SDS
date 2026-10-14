@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}CampusFix | My Tickets{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+  <div>
+    <h2 class="mb-1">My Tickets</h2>
+    <p class="text-secondary mb-0">View all complaint records submitted by you.</p>
+  </div>
+  <a href="{{ url_for('report_issue') }}" class="btn btn-primary">Report New Issue</a>
+</div>
+
+<div class="card shadow-sm border-0">
+  <div class="card-body">
+    {% if complaints %}
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th>Ticket ID</th>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Location</th>
+            <th>Status</th>
+            <th>AI Category</th>
+            <th>AI Priority</th>
+            <th>Submitted</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for complaint in complaints %}
+          <tr>
+            <td>{{ ticket_ref(complaint['id']) }}</td>
+            <td>{{ complaint['title'] }}</td>
+            <td>{{ complaint['category'] }}</td>
+            <td>{{ complaint['location'] }}</td>
+            <td>
+              {% if complaint['status'] == 'Pending' %}
+                <span class="badge bg-warning text-dark">Pending</span>
+              {% elif complaint['status'] == 'In Progress' %}
+                <span class="badge bg-info text-dark">In Progress</span>
+              {% else %}
+                <span class="badge bg-success">Resolved</span>
+              {% endif %}
+            </td>
+            <td>{{ complaint['ai_category'] or 'Not available' }}</td>
+            <td>{{ complaint['ai_priority'] or 'Not available' }}</td>
+            <td>{{ complaint['created_at'][:10] }}</td>
+            <td><a href="{{ url_for('ticket_detail', ticket_id=complaint['id']) }}" class="btn btn-sm btn-outline-primary">Details</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+      <p class="text-secondary mb-0">No tickets found. Submit a complaint to start.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

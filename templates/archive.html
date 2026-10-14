@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}CampusFix | Archived Tickets{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+  <h2 class="mb-1">Archived Resolved Tickets</h2>
+  <p class="text-secondary mb-0">Resolved tickets move here after one day. They remain stored and can still be reviewed.</p>
+</div>
+
+{% if complaints %}
+  <div class="card shadow-sm border-0">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead>
+            <tr>
+              <th>Ticket ID</th>
+              <th>Title</th>
+              <th>Category</th>
+              <th>Location</th>
+              <th>Resolved</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for complaint in complaints %}
+              <tr>
+                <td>{{ ticket_ref(complaint['id']) }}</td>
+                <td>{{ complaint['title'] }}</td>
+                <td>{{ complaint['category'] }}</td>
+                <td>{{ complaint['location'] }}</td>
+                <td>{{ complaint['updated_at'] }}</td>
+                <td><a href="{{ url_for('ticket_detail', ticket_id=complaint['id']) }}" class="btn btn-sm btn-outline-primary">View</a></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% else %}
+  <div class="card shadow-sm border-0">
+    <div class="card-body text-secondary">No resolved tickets have been archived yet.</div>
+  </div>
+{% endif %}
+{% endblock %}

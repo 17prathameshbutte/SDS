@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}CampusFix | Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+  <div>
+    <h2 class="mb-1">Welcome, {{ user['name'] }}</h2>
+    <p class="text-secondary mb-0">Track your submitted complaints and maintenance progress.</p>
+  </div>
+  <a href="{{ url_for('report_issue') }}" class="btn btn-primary">Report a New Issue</a>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card shadow-sm border-0">
+      <div class="card-body">
+        <p class="text-secondary mb-1">Pending</p>
+        <h3>{{ stats['pending'] }}</h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card shadow-sm border-0">
+      <div class="card-body">
+        <p class="text-secondary mb-1">In Progress</p>
+        <h3>{{ stats['progress'] }}</h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card shadow-sm border-0">
+      <div class="card-body">
+        <p class="text-secondary mb-1">Resolved</p>
+        <h3>{{ stats['resolved'] }}</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card shadow-sm border-0">
+  <div class="card-body">
+    <h4 class="mb-3">Recent Complaints</h4>
+    {% if complaints %}
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th>Ticket ID</th>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Location</th>
+            <th>Status</th>
+            <th>Submitted</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for complaint in complaints %}
+          <tr>
+            <td>{{ ticket_ref(complaint['id']) }}</td>
+            <td>{{ complaint['title'] }}</td>
+            <td>{{ complaint['category'] }}</td>
+            <td>{{ complaint['location'] }}</td>
+            <td>
+              {% if complaint['status'] == 'Pending' %}
+                <span class="badge bg-warning text-dark">Pending</span>
+              {% elif complaint['status'] == 'In Progress' %}
+                <span class="badge bg-info text-dark">In Progress</span>
+              {% else %}
+                <span class="badge bg-success">Resolved</span>
+              {% endif %}
+            </td>
+            <td>{{ complaint['created_at'][:10] }}</td>
+            <td><a href="{{ url_for('ticket_detail', ticket_id=complaint['id']) }}" class="btn btn-sm btn-outline-primary">View</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+      <p class="text-secondary mb-0">No complaints submitted yet. Use the report issue button to get started.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
