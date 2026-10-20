@@ -38,7 +38,7 @@
         {% if complaint['image_filename'] %}
         <div class="mt-4">
           <h5>Uploaded Image</h5>
-          <img src="{{ url_for('serve_uploaded_file', filename=complaint['image_filename']) }}" class="img-fluid rounded border" alt="Complaint image">
+          <img src="{{ url_for('main.serve_uploaded_file', filename=complaint['image_filename']) }}" class="img-fluid rounded border" alt="Complaint image">
         </div>
         {% endif %}
       </div>

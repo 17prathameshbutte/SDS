@@ -9,6 +9,7 @@
       <div class="card-body p-4">
         <h2 class="mb-4">Report a Campus Issue</h2>
         <form method="POST" enctype="multipart/form-data">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
           <div class="row g-3">
             <div class="col-md-6">
               <label for="title" class="form-label">Issue title</label>

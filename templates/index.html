@@ -14,13 +14,13 @@
       <div class="d-flex gap-3 flex-wrap mt-4">
         {% if session.get('user_id') %}
           {% if session.get('user_role') == 'admin' %}
-            <a class="btn btn-primary btn-lg" href="{{ url_for('admin_dashboard') }}">Open Admin Dashboard</a>
+            <a class="btn btn-primary btn-lg" href="{{ url_for('admin.admin_dashboard') }}">Open Admin Dashboard</a>
           {% else %}
-            <a class="btn btn-primary btn-lg" href="{{ url_for('report_issue') }}">Report an Issue</a>
+            <a class="btn btn-primary btn-lg" href="{{ url_for('issues.report_issue') }}">Report an Issue</a>
           {% endif %}
         {% else %}
-          <a class="btn btn-primary btn-lg" href="{{ url_for('login') }}">Login</a>
-          <a class="btn btn-outline-primary btn-lg" href="{{ url_for('register') }}">Student Registration</a>
+          <a class="btn btn-primary btn-lg" href="{{ url_for('auth.login') }}">Login</a>
+          <a class="btn btn-outline-primary btn-lg" href="{{ url_for('auth.register') }}">Student Registration</a>
         {% endif %}
       </div>
     </div>

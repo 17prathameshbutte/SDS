@@ -38,11 +38,19 @@ This combination is simple, open-source, and easy to explain in an interview. Fl
 
 ## Folder structure
 
-- `app.py` — main Flask application
-- `config.py` — configuration values
+- `app.py` — creates and configures the Flask app, registers the blueprints, starts the server
+- `database.py` — database connection, table creation, and admin account setup
+- `config.py` — configuration values and shared choices (categories, statuses)
+- `routes/` — one Flask Blueprint per feature:
+  - `main_routes.py` — home page, protected image serving, health check
+  - `auth_routes.py` — register, login, logout, and the login/role checks
+  - `student_routes.py` — student dashboard and "My Tickets"
+  - `issue_routes.py` — report an issue, issue board and voting, archive, ticket details
+  - `admin_routes.py` — admin dashboard and status updates
 - `requirements.txt` — Python dependencies
 - `templates/` — HTML pages
 - `static/` — CSS and JavaScript assets
+- `uploads/` — uploaded issue images (created at runtime, not in Git, not publicly served)
 - `services/gemini_service.py` — Gemini AI integration
 - `tests/` — automated tests
 - `docs/` — design and architecture notes
@@ -57,7 +65,7 @@ This combination is simple, open-source, and easy to explain in an interview. Fl
 ## Windows installation
 
 ```powershell
-cd C:\Users\Pravin\Desktop\SDS
+cd path\to\your\project-folder
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
@@ -78,7 +86,7 @@ Then update `.env`:
 SECRET_KEY=your-secret-key-here
 GEMINI_API_KEY=your-gemini-api-key-here
 ADMIN_EMAIL=admin@campusfix.local
-ADMIN_PASSWORD=ChangeMe123!
+ADMIN_PASSWORD=your-strong-password-here
 ```
 
 ## Create the first administrator
@@ -86,7 +94,7 @@ ADMIN_PASSWORD=ChangeMe123!
 Use the built-in CLI helper:
 
 ```powershell
-python app.py --create-admin --email admin@campusfix.local --password ChangeMe123!
+python app.py --create-admin --email admin@campusfix.local --password "your-strong-password-here"
 ```
 
 ## Run the application
@@ -142,13 +150,14 @@ http://127.0.0.1:5000/
 ## Security notes
 
 - Passwords are hashed before storage.
-- The app uses environment variables for secrets.
-- Uploaded files are stored locally in the `uploads/` folder.
+- The app uses environment variables for secrets. Set `SECRET_KEY` in `.env`; if it is missing or still the placeholder, a temporary random key is used and everyone is logged out on each restart.
+- Every form that changes data includes a CSRF token (Flask-WTF).
+- Uploaded images are stored in the `uploads/` folder, outside `static/`. Only the student who reported the issue, or an admin, can view an image (login required).
+- Uploads are checked by extension, size (max 5 MB), image dimensions, and real file content (only genuine PNG/JPEG files are accepted). Stored filenames are random.
 - The app protects admin routes and restricts unauthorized access.
 
 ## Future improvements
 
-- More robust file validation
 - Better duplicate detection
 - Admin audit logs
 - Role-based UI controls

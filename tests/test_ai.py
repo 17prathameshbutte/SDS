@@ -24,7 +24,7 @@ class GeminiTests(unittest.TestCase):
             mock_client.models.generate_content.assert_called_once()
             self.assertEqual(
                 mock_client.models.generate_content.call_args.kwargs["model"],
-                "gemini-3.8-flash",
+                "gemini-3.5-flash-lite",
             )
 
     @patch("services.gemini_service.genai")
@@ -43,6 +43,18 @@ class GeminiTests(unittest.TestCase):
         self.assertEqual(result["status"], "ok")
         self.assertEqual(result["category"], "Electrical")
         self.assertEqual(result["priority"], "Critical")
+
+    @patch("services.gemini_service.genai")
+    def test_ai_client_is_created_with_a_timeout(self, mock_genai):
+        class FakeResponse:
+            text = '{"category": "Other", "priority": "Low", "explanation": "Minor."}'
+
+        mock_genai.Client.return_value.models.generate_content.return_value = FakeResponse()
+        with patch.dict(os.environ, {"GEMINI_API_KEY": "fake-key"}, clear=True):
+            get_ticket_ai_suggestions("Loose handle", "The handle is loose.")
+        options = mock_genai.Client.call_args.kwargs["http_options"]
+        self.assertGreater(options["timeout"], 0)
+        self.assertLessEqual(options["timeout"], 30000)
 
     @patch("services.gemini_service.genai")
     def test_ai_accepts_cleaning_category_and_new_priority_levels(self, mock_genai):

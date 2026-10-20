@@ -16,7 +16,7 @@ CampusFix is a single-application Flask service that allows students to submit a
 2. SQLite database
    - Stores users, complaints, and status actions
 3. Uploaded file storage
-   - Stores complaint images locally in `uploads/`
+   - Stores complaint images locally in `uploads/` (served only to the reporting student and admins)
 4. Gemini service
    - Provides category and priority suggestions when configured
 5. SQLite vote records

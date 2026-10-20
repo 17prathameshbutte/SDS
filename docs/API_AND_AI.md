@@ -5,6 +5,7 @@ The project uses Gemini to suggest a maintenance category and priority when a va
 ## AI design
 
 - The AI call is made from `services/gemini_service.py`.
+- The integration uses the `gemini-3.5-flash-lite` model.
 - The app validates the returned JSON before saving the suggestion.
 - If the API key is missing or the API fails, the complaint still saves successfully.
 - Passwords and other sensitive information are never sent to Gemini.

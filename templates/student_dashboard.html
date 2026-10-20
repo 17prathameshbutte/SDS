@@ -8,7 +8,7 @@
     <h2 class="mb-1">Welcome, {{ user['name'] }}</h2>
     <p class="text-secondary mb-0">Track your submitted complaints and maintenance progress.</p>
   </div>
-  <a href="{{ url_for('report_issue') }}" class="btn btn-primary">Report a New Issue</a>
+  <a href="{{ url_for('issues.report_issue') }}" class="btn btn-primary">Report a New Issue</a>
 </div>
 
 <div class="row g-3 mb-4">
@@ -72,7 +72,7 @@
               {% endif %}
             </td>
             <td>{{ complaint['created_at'][:10] }}</td>
-            <td><a href="{{ url_for('ticket_detail', ticket_id=complaint['id']) }}" class="btn btn-sm btn-outline-primary">View</a></td>
+            <td><a href="{{ url_for('issues.ticket_detail', ticket_id=complaint['id']) }}" class="btn btn-sm btn-outline-primary">View</a></td>
           </tr>
           {% endfor %}
         </tbody>

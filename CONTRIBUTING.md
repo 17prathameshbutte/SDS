@@ -14,7 +14,7 @@ This project is intended as a learning project and an interview-ready demo. Cont
 ## Local setup
 
 ```powershell
-cd C:\Users\Pravin\Desktop\SDS
+cd path\to\your\project-folder
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt

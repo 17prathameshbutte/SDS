@@ -8,7 +8,7 @@
     <h2 class="mb-1">My Tickets</h2>
     <p class="text-secondary mb-0">View all complaint records submitted by you.</p>
   </div>
-  <a href="{{ url_for('report_issue') }}" class="btn btn-primary">Report New Issue</a>
+  <a href="{{ url_for('issues.report_issue') }}" class="btn btn-primary">Report New Issue</a>
 </div>
 
 <div class="card shadow-sm border-0">
@@ -48,7 +48,7 @@
             <td>{{ complaint['ai_category'] or 'Not available' }}</td>
             <td>{{ complaint['ai_priority'] or 'Not available' }}</td>
             <td>{{ complaint['created_at'][:10] }}</td>
-            <td><a href="{{ url_for('ticket_detail', ticket_id=complaint['id']) }}" class="btn btn-sm btn-outline-primary">Details</a></td>
+            <td><a href="{{ url_for('issues.ticket_detail', ticket_id=complaint['id']) }}" class="btn btn-sm btn-outline-primary">Details</a></td>
           </tr>
           {% endfor %}
         </tbody>

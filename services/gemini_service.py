@@ -9,6 +9,8 @@ except ImportError:  # pragma: no cover - handled gracefully in app
 
 ALLOWED_AI_CATEGORIES = ["Electrical", "Plumbing", "Furniture", "Civil", "Cleaning", "Other"]
 ALLOWED_AI_PRIORITIES = ["Critical", "Important", "Normal", "Low"]
+AI_TIMEOUT_MS = 15000
+GEMINI_MODEL = "gemini-3.5-flash-lite"
 
 
 def get_ticket_ai_suggestions(title, description, original_category=None):
@@ -68,9 +70,10 @@ def get_ticket_ai_suggestions(title, description, original_category=None):
     """
 
     try:
-        client = genai.Client(api_key=api_key)
+        # Timeout is in milliseconds so a slow AI call cannot hang the student's form submission.
+        client = genai.Client(api_key=api_key, http_options={"timeout": AI_TIMEOUT_MS})
         response = client.models.generate_content(
-            model="gemini-3.8-flash",
+            model=GEMINI_MODEL,
             contents=prompt,
         )
         raw_text = getattr(response, "text", None)

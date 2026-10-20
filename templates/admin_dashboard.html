@@ -99,7 +99,7 @@
           {% for complaint in complaints %}
           <tr>
             <td>{{ ticket_ref(complaint['id']) }}</td>
-            <td><a href="{{ url_for('ticket_detail', ticket_id=complaint['id']) }}" class="text-decoration-none">{{ complaint['title'] }}</a></td>
+            <td><a href="{{ url_for('issues.ticket_detail', ticket_id=complaint['id']) }}" class="text-decoration-none">{{ complaint['title'] }}</a></td>
             <td>{{ complaint['category'] }}</td>
             <td>{{ complaint['location'] }}</td>
             <td>
@@ -115,13 +115,14 @@
             <td>{{ complaint['upvotes'] - complaint['downvotes'] }} ({{ complaint['upvotes'] }} up / {{ complaint['downvotes'] }} down)</td>
             <td>
               {% if complaint['image_filename'] %}
-                <img src="{{ url_for('serve_uploaded_file', filename=complaint['image_filename']) }}" alt="Complaint preview" class="img-preview">
+                <img src="{{ url_for('main.serve_uploaded_file', filename=complaint['image_filename']) }}" alt="Complaint preview" class="img-preview">
               {% else %}
                 No image
               {% endif %}
             </td>
             <td>
-              <form method="POST" action="{{ url_for('update_status', ticket_id=complaint['id']) }}">
+              <form method="POST" action="{{ url_for('admin.update_status', ticket_id=complaint['id']) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <select class="form-select form-select-sm mb-2" name="status">
                   {% for status in statuses %}
                     <option value="{{ status }}" {% if complaint['status'] == status %}selected{% endif %}>{{ status }}</option>

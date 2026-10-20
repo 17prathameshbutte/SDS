@@ -8,7 +8,9 @@
     <h2 class="mb-1">Open Campus Issues</h2>
     <p class="text-secondary mb-0">Vote for open issues that should get attention sooner.</p>
   </div>
-  <a href="{{ url_for('report_issue') }}" class="btn btn-primary">Report an Issue</a>
+  {% if session.get('user_role') != 'admin' %}
+    <a href="{{ url_for('issues.report_issue') }}" class="btn btn-primary">Report an Issue</a>
+  {% endif %}
 </div>
 
 {% if complaints %}
@@ -33,18 +35,23 @@
                 <div class="fw-semibold text-center mb-2">
                   Score: {{ complaint['upvotes'] - complaint['downvotes'] }}
                 </div>
-                <form method="POST" action="{{ url_for('vote_for_issue', ticket_id=complaint['id']) }}" class="d-flex gap-2">
-                  <button type="submit" name="vote" value="1"
-                          class="btn btn-sm {{ 'btn-success' if complaint['my_vote'] == 1 else 'btn-outline-success' }}"
-                          aria-label="Upvote this issue">
-                    Upvote {{ complaint['upvotes'] }}
-                  </button>
-                  <button type="submit" name="vote" value="-1"
-                          class="btn btn-sm {{ 'btn-danger' if complaint['my_vote'] == -1 else 'btn-outline-danger' }}"
-                          aria-label="Downvote this issue">
-                    Downvote {{ complaint['downvotes'] }}
-                  </button>
-                </form>
+                {% if session.get('user_role') != 'admin' %}
+                  <form method="POST" action="{{ url_for('issues.vote_for_issue', ticket_id=complaint['id']) }}" class="d-flex gap-2">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" name="vote" value="1"
+                            class="btn btn-sm {{ 'btn-success' if complaint['my_vote'] == 1 else 'btn-outline-success' }}"
+                            aria-label="Upvote this issue">
+                      Upvote {{ complaint['upvotes'] }}
+                    </button>
+                    <button type="submit" name="vote" value="-1"
+                            class="btn btn-sm {{ 'btn-danger' if complaint['my_vote'] == -1 else 'btn-outline-danger' }}"
+                            aria-label="Downvote this issue">
+                      Downvote {{ complaint['downvotes'] }}
+                    </button>
+                  </form>
+                {% else %}
+                  <div class="text-secondary small text-center">{{ complaint['upvotes'] }} up / {{ complaint['downvotes'] }} down</div>
+                {% endif %}
               </div>
             </div>
           </div>

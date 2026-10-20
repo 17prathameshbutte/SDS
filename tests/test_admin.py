@@ -65,6 +65,45 @@ class AdminTests(unittest.TestCase):
         self.assertEqual(updated, "In Progress")
         self.assertGreater(history_count, 0)
 
+    def add_complaint(self, title, location="Block A"):
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.execute(
+            "INSERT INTO complaints (user_id, title, category, location, description, status, updated_at) "
+            "VALUES (?, ?, 'Plumbing', ?, 'Details.', 'Pending', CURRENT_TIMESTAMP)",
+            (self.student_id, title, location),
+        )
+        conn.commit()
+        complaint_id = cursor.lastrowid
+        conn.close()
+        return complaint_id
+
+    def test_admin_can_search_by_displayed_ticket_id(self):
+        first = self.add_complaint("Leaky tap")
+        second = self.add_complaint("Broken window", location="Block B")
+        self.assertEqual((first, second), (1, 2))
+        self.client.post("/login", data={"email": "admin@example.com", "password": "Admin123"})
+
+        for term in ("CF-00002", "cf-00002", "CF00002", "00002", "2"):
+            html = self.client.get("/admin", query_string={"search": term}).data
+            self.assertIn(b"Broken window", html, term)
+            self.assertNotIn(b"Leaky tap", html, term)
+
+    def test_admin_search_still_matches_title_and_location(self):
+        self.add_complaint("Leaky tap", location="Block A")
+        self.add_complaint("Broken window", location="Library")
+        self.client.post("/login", data={"email": "admin@example.com", "password": "Admin123"})
+        by_title = self.client.get("/admin", query_string={"search": "leaky"}).data
+        by_location = self.client.get("/admin", query_string={"search": "library"}).data
+        self.assertIn(b"Leaky tap", by_title)
+        self.assertNotIn(b"Broken window", by_title)
+        self.assertIn(b"Broken window", by_location)
+
+    def test_admin_search_handles_huge_numbers_without_error(self):
+        self.add_complaint("Leaky tap")
+        self.client.post("/login", data={"email": "admin@example.com", "password": "Admin123"})
+        response = self.client.get("/admin", query_string={"search": "9" * 40})
+        self.assertEqual(response.status_code, 200)
+
 
 if __name__ == "__main__":
     unittest.main()

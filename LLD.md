@@ -22,12 +22,13 @@
 
 ## Important functions
 
-- `create_app()` — build the Flask application and initialize the database
-- `init_db()` — create tables if missing
-- `ensure_default_admin()` — create the configured admin if environment values exist
-- `login_required()` — check that a user is logged in
-- `role_required()` — check access permissions by user role
-- `ticket_ref()` — create a readable ticket ID like `CF-00001`
+- `create_app()` (`app.py`) — configure the Flask application, set up the database and CSRF protection, register the blueprints
+- `init_db()` (`database.py`) — create tables if missing
+- `ensure_default_admin()` (`database.py`) — create the configured admin if environment values exist
+- `login_required()` (`routes/auth_routes.py`) — check that a user is logged in (and still exists)
+- `role_required()` (`routes/auth_routes.py`) — check access permissions by user role
+- `read_valid_image()` (`routes/issue_routes.py`) — check an uploaded image's type, size, and real content
+- `ticket_ref()` (`database.py`) — create a readable ticket ID like `CF-00001`
 - `get_ticket_ai_suggestions()` — call Gemini and validate the response
 - `vote_for_issue()` — store one student's vote per issue
 
